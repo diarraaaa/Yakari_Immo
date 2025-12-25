@@ -1,2 +1,2 @@
 # Yakari_Immo
-Repositoire pour le projet immoblillier de Yakari_Corp
+Repositoire pour le projet immoblillier de Yakari_Corp.
