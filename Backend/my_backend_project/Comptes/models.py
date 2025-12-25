@@ -37,21 +37,17 @@ class User(AbstractUser):
 #on crée un modèle pour les locataires qui est lié au modèle User par une relation OneToOne
 class Locataire(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='locataire_profile')
-    nom=models.CharField(max_length=100)
-    prenom=models.CharField(max_length=100)
     telephone=models.CharField(max_length=15)
     numero_carte_identite=models.CharField(max_length=50)
     is_verified=models.BooleanField(default=False)
     def __str__(self):
-        return f"Locataire: {self.user.email} {self.nom} {self.prenom}"
+        return f"Locataire: {self.user.email} {self.user.first_name} {self.user.last_name}"
 
 #on crée un modèle pour les propriétaires qui est lié au modèle User par une relation OneToOne
 class Proprietaire(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='proprietaire_profile')
-    nom=models.CharField(max_length=100)
-    prenom=models.CharField(max_length=100)
     telephone=models.CharField(max_length=15)
     is_verified=models.BooleanField(default=False)
     numero_carte_identite=models.CharField(max_length=50)
     def __str__(self):
-        return f"Propriétaire: {self.user.email} {self.nom} {self.prenom}"
+        return f"Propriétaire: {self.user.email} {self.user.first_name} {self.user.last_name}"
