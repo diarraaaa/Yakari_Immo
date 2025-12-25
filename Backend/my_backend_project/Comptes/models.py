@@ -34,7 +34,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
     
-
 #on crée un modèle pour les locataires qui est lié au modèle User par une relation OneToOne
 class Locataire(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='locataire_profile')
