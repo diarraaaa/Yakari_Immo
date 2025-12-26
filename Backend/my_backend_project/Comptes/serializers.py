@@ -4,9 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
 from .services.email import send_verification_email
 import uuid
-
 #on va créer un serializer pour l'inscription des utilisateurs
-
 class InscriptionSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     telephone=serializers.CharField(required=True,write_only=True)
@@ -50,6 +48,10 @@ class InscriptionSerializer(serializers.ModelSerializer):
 class ConnectionSerializer(serializers.Serializer):
     password=serializers.CharField(write_only=True)
     email=serializers.EmailField(required=True)
+    refresh=serializers.CharField(read_only=True)
+    access=serializers.CharField(read_only=True)
+    role=serializers.CharField(read_only=True)
+    username=serializers.CharField(read_only=True)
 
     def validate(self,attrs):
         email=attrs.get('email')

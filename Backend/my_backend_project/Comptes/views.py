@@ -30,7 +30,9 @@ class LoginView(APIView):
         if serializer.is_valid():
             #logique de connexion à implémenter
             serializer_data=serializer.data
+            #on ecrit les données pour verifier la connexion
             return Response(serializer_data,status=status.HTTP_200_OK)
+        
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
 #on va créer une vue pour la vérification de l'email des utilisateurs
