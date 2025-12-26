@@ -52,6 +52,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",
+    "https://redesigned-dollop-7v7jr45j69pfr6ww-8000.app.github.dev"
+]
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
@@ -109,8 +113,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
-
+from datetime import timedelta
+#ici on configure les paramètres de Simple JWT pour la durée de vie des tokens
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -127,3 +136,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+# EMAIL CONFIG (SMTP)
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("email_host")
+EMAIL_HOST_PASSWORD = os.getenv("email_password")
+
+DEFAULT_FROM_EMAIL = "Yakari Immo <{}>".format(EMAIL_HOST_USER)

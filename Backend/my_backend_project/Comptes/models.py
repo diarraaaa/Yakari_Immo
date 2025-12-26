@@ -12,6 +12,8 @@ class User(AbstractUser):
 #on crée un champ supplémentaire pour stocker le rôle de l'utilisateur
     role=models.CharField(max_length=20,choices=roles)
     email=models.EmailField(unique=True)
+    is_verified=models.BooleanField(default=False)
+    verification_token=models.CharField(max_length=100,null=True,blank=True)
     groups = models.ManyToManyField(
         Group,
         related_name='custom_user_set',
@@ -39,7 +41,6 @@ class Locataire(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='locataire_profile')
     telephone=models.CharField(max_length=15)
     numero_carte_identite=models.CharField(max_length=50)
-    is_verified=models.BooleanField(default=False)
     def __str__(self):
         return f"Locataire: {self.user.email} {self.user.first_name} {self.user.last_name}"
 
@@ -47,7 +48,6 @@ class Locataire(models.Model):
 class Proprietaire(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name='proprietaire_profile')
     telephone=models.CharField(max_length=15)
-    is_verified=models.BooleanField(default=False)
     numero_carte_identite=models.CharField(max_length=50)
     def __str__(self):
         return f"Propriétaire: {self.user.email} {self.user.first_name} {self.user.last_name}"
