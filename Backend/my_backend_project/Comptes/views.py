@@ -5,7 +5,8 @@ from rest_framework import status
 from .serializers import InscriptionSerializer,ConnectionSerializer
 from .models import User
 from django.utils import timezone
-from datetime import timedelta
+from django.core.mail import send_mail
+from django.conf import settings
 #on va créer une vue pour l'inscription des utilisateurs
 class SignupView(APIView):
     def get(self,request):
@@ -42,12 +43,20 @@ class VerifyEmailView(APIView):
     def get(self,request,token):
         try:
             user=User.objects.get(verification_token=token)
-            if not token or timezone.now()>user.token_expires_at   :
-                return Response({"error":"Token is invalid or expired."},status=status.HTTP_400_BAD_REQUEST)
-            user.is_verified=True
-            user.token_expires_at=None
-            user.verification_token=None
-            user.save()
-            return Response({"message":"Email verified successfully."},status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"error":"Invalid token."},status=status.HTTP_400_BAD_REQUEST)
+        except(User.DoesNotExist):
+                return Response({"error":"Invalid token."},status=status.HTTP_400_BAD_REQUEST)
+        if  timezone.now()>user.token_expires_at   :
+                return Response({"error":"Token is expired."},status=status.HTTP_400_BAD_REQUEST)
+        user.is_verified=True
+        user.token_expires_at=None
+        user.verification_token=None
+        user.save()
+        send_mail(
+            subject="Bienvenue sur Yakari Immo",
+            message=f"Bienvenue sur Yakari Immo: {user.first_name} {user.last_name}, votre email a été vérifié avec succès.",
+            html_message=f"<p>Bienvenue sur Yakari Immo: {user.first_name} {user.last_name}, votre email a été vérifié avec succès.</p>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+        return Response({"message":"Email verified successfully."},status=status.HTTP_200_OK)
