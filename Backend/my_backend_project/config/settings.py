@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -53,7 +53,7 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8000",
-    "https://redesigned-dollop-7v7jr45j69pfr6ww-8000.app.github.dev"
+    "https://glowing-fishstick-wwrrpx5x6v5f96rq.github.dev"
 ]
 ROOT_URLCONF = "config.urls"
 
@@ -88,7 +88,16 @@ DATABASES = {
         'PORT': '6543',
     }
 }
+import sys
 
+# Use SQLite for tests
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

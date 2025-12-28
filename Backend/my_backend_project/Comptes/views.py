@@ -24,7 +24,6 @@ class SignupView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 #on va crée une vue pour la connexion des utilisateurs
-
 class LoginView(APIView):
     def get(self,request):
         return Response({"message": "Use a post request to login a user."}, status=status.HTTP_200_OK)
