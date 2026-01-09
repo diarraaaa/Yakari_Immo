@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone } from 'lucide-react';
 import { FaFacebookF, FaGoogle } from 'react-icons/fa';
 
@@ -9,7 +9,8 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [accountType, setAccountType] = useState<'locataire' | 'proprietaire'>('locataire');
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -147,18 +148,35 @@ export default function RegisterPage() {
 
           {/* Formulaire */}
           <div className="space-y-5">
-            {/* Nom complet */}
+            {/* Prénom */}
             <div>
               <label className="block text-sm font-medium text-white/80 mb-2">
-                Nom complet
+                Prénom
               </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
                   type="text"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  placeholder="Jean Dupont"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  placeholder="Jean"
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
+                />
+              </div>
+            </div>
+
+            {/* Nom */}
+            <div>
+              <label className="block text-sm font-medium text-white/80 mb-2">
+                Nom
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  placeholder="Dupont"
                   className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
                 />
               </div>
