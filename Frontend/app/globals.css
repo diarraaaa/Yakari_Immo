@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  /* Palette Deukeulma - Tons chauds et professionnels */
+  --color-primary-50: #fdf8f6;
+  --color-primary-100: #f2e8e5;
+  --color-primary-200: #eaddd7;
+  --color-primary-300: #e0cec7;
+  --color-primary-400: #d2bab0;
+  --color-primary-500: #bfa094;
+  --color-primary-600: #a18072;
+  --color-primary-700: #846358;
+  --color-primary-800: #6c4f43;
+  --color-primary-900: #5a4139;
+  
+  --color-secondary-50: #fefce8;
+  --color-secondary-100: #fef9c3;
+  --color-secondary-200: #fef08a;
+  --color-secondary-300: #fde047;
+  --color-secondary-400: #f5d586;
+  --color-secondary-500: #d4a574;
+  --color-secondary-600: #b8885d;
+  --color-secondary-700: #9a6f4a;
+  --color-secondary-800: #7d5a3c;
+  --color-secondary-900: #654a32;
+  
+  --color-dark-50: #f6f6f6;
+  --color-dark-100: #e7e7e7;
+  --color-dark-200: #d1d1d1;
+  --color-dark-300: #b0b0b0;
+  --color-dark-400: #888888;
+  --color-dark-500: #6d6d6d;
+  --color-dark-600: #5d5d5d;
+  --color-dark-700: #4f4f4f;
+  --color-dark-800: #3d3d3d;
+  --color-dark-900: #2d2d2d;
+  --color-dark-950: #1a1a1a;
+  
+  --font-display: 'Playfair Display', serif;
+  
+  --background-image-gradient-primary: linear-gradient(135deg, #846358 0%, #bfa094 100%);
+  --background-image-gradient-warm: linear-gradient(135deg, #2d2d2d 0%, #4f4f4f 50%, #6c4f43 100%);
+}
+
+* {
+  border-color: var(--color-dark-700);
+}
+
+body {
+  background-color: var(--color-dark-900);
+  color: rgb(243 244 246);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Composants réutilisables */
+.btn-primary {
+  background-image: var(--background-image-gradient-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-500);
+  color: var(--color-dark-900);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-600);
+}
+
+.btn-outline {
+  border: 2px solid var(--color-primary-500);
+  color: var(--color-primary-400);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary-500);
+  color: white;
+}
+
+.card-dark {
+  background-color: var(--color-dark-800);
+  border: 1px solid var(--color-dark-700);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color 0.3s;
+}
+
+.card-dark:hover {
+  border-color: var(--color-primary-600);
+}
+
+.section-container {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 4rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .section-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.bg-gradient-primary {
+  background-image: var(--background-image-gradient-primary);
+}
+
+.bg-gradient-warm {
+  background-image: var(--background-image-gradient-warm);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
