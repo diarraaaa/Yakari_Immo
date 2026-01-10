@@ -14,7 +14,8 @@ export default function RegisterPage() {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    accountType: ''
   });
 
   const handleSubmit = () => {

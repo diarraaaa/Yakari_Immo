@@ -37,7 +37,9 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost:8000',
     'https://glowing-fishstick-wwrrpx5x6v5f96rq.github.dev',
-    'https://glowing-fishstick-wwrrpx5x6v5f96rq-8000.app.github.dev',  # Pas de slash à la fin
+    'https://glowing-fishstick-wwrrpx5x6v5f96rq-8000.app.github.dev',
+    'https://glowing-fishstick-wwrrpx5x6v5f96rq-3000.app.github.dev/'
+        # Pas de slash à la fin
 ]
 
 # Application definition
@@ -83,8 +85,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "Comptes",
+    'corsheaders',
 ]
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -114,7 +118,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+CORS_ALLOW_CREDENTIALS = True
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -196,3 +200,16 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 DEFAULT_FROM_EMAIL = "Yakari Immo <{EMAIL_HOST_USER}>".format(EMAIL_HOST_USER=EMAIL_HOST_USER)
+
+CORS_ALLOWED_ORIGINS = [
+    "https://glowing-fishstick-wwrrpx5x6v5f96rq-3000.app.github.dev",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "origin",
+    "x-csrftoken",
+    "x-requested-with",
+]

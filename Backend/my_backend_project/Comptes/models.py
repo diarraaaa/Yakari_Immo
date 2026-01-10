@@ -8,7 +8,7 @@ from datetime import timedelta
 #On crée un modèle personnalisé pour les utilisateurs en héritant du modèle AbstractUser de Django
 class User(AbstractUser):
     roles=[
-        ('propriétaire','Propriétaire'),
+        ('proprietaire','Proprietaire'),
         ('locataire','Locataire'),
     ]
 #on crée un champ supplémentaire pour stocker le rôle de l'utilisateur
@@ -32,7 +32,7 @@ class User(AbstractUser):
     )
     #on crée les méthodes pour avoir le role de l'utilisateur
     def is_proprietaire(self):
-        return self.role=='propriétaire'
+        return self.role=='proprietaire'
     @property
     def is_locataire(self):
         return self.role=='locataire'
