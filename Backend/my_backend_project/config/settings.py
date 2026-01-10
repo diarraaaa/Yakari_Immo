@@ -202,7 +202,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
 DEFAULT_FROM_EMAIL = "Yakari Immo <{EMAIL_HOST_USER}>".format(EMAIL_HOST_USER=EMAIL_HOST_USER)
 
 CORS_ALLOWED_ORIGINS = [
-    "https://glowing-fishstick-wwrrpx5x6v5f96rq-3000.app.github.dev",
+    os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
 CORS_ALLOW_HEADERS = [
