@@ -9,10 +9,33 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = () => {
-    // Logique de connexion ici
-    console.log('Login:', { email, password });
-  };
+  const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const handleSubmit = async () => {
+  try {
+    const res = await fetch(
+      `${api}/api/login/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }
+    );
+
+    const data = await res.json();
+    console.log(res.status, data);
+
+    if (!res.ok) {
+      throw new Error(JSON.stringify(data));
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'inscription :", error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-dark-900 text-white flex">
