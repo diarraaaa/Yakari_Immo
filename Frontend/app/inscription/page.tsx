@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone } from 'lucide-react';
 import { FaFacebookF, FaGoogle } from 'react-icons/fa';
 
@@ -8,18 +8,55 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [accountType, setAccountType] = useState<'locataire' | 'proprietaire'>('locataire');
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: ''
-  });
+const [formData, setFormData] = useState({
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  password: '',
+  confirmPassword: '',
+  username: '',
+  accountType: ''
+});
 
-  const handleSubmit = () => {
-    console.log('Register:', { ...formData, accountType });
-  };
+const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const handleSubmit = async () => {
+  if (formData.password !== formData.confirmPassword) {
+    console.error("Les mots de passe ne correspondent pas");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `${api}/api/signup/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          username: formData.firstName,
+          email: formData.email,
+          telephone: formData.phone,
+          password: formData.password,
+          role: accountType,
+        }),
+      }
+    );
+
+    const data = await res.json();
+    console.log(res.status, data);
+
+    if (!res.ok) {
+      throw new Error(JSON.stringify(data));
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'inscription :", error);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-dark-900 text-white flex">
