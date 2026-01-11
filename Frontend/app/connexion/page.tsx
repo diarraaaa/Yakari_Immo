@@ -71,7 +71,7 @@ const handleSubmit = async () => {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  token: credentialResponse.credential, // ✅ ID TOKEN
+                  token: credentialResponse.credential,
                 }),
               });
 
