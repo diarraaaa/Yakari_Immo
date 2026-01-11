@@ -173,6 +173,7 @@ const handleSubmit = async () => {
                 },
                 body: JSON.stringify({
                   token: credentialResponse.credential,
+                  role:"locataire"
                 }),
               });
 

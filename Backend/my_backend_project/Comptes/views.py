@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 import uuid
+from .models import User, Locataire, Proprietaire
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from rest_framework.views import APIView
@@ -99,6 +100,7 @@ class VerifyEmailView(APIView):
 class GoogleAuthView(APIView):
     def post(self,request):
         token=request.data.get("token")
+        role=request.data.get("role")
         try:
             idinfo=id_token.verify_oauth2_token(token,requests.Request(),os.getenv("GOOGLE_CLIENT_ID"))
             email=idinfo.get("email")
@@ -106,6 +108,8 @@ class GoogleAuthView(APIView):
             last_name=idinfo.get("family_name","")
             try:
                 user=User.objects.get(email=email)
+                user.last_login=timezone.now()
+                user.save()
             except User.DoesNotExist:
                 user=User.objects.create(
                     email=email,
@@ -114,6 +118,20 @@ class GoogleAuthView(APIView):
                     is_verified=True
                 )
                 user.set_unusable_password()
+                user.last_login=timezone.now()
+                user.save()
+                if role=="proprietaire":
+                    user.role="proprietaire"
+                    Proprietaire.objects.create(
+                        user=user,
+                        telephone="",
+                    )
+                else:
+                    user.role="locataire"
+                    Locataire.objects.create(
+                        user=user,
+                        telephone="",
+                    )
                 user.save()
             refresh=RefreshToken.for_user(user)
             return Response({
@@ -123,7 +141,8 @@ class GoogleAuthView(APIView):
                     "id":user.id,
                     "email":user.email,
                     "first_name":user.first_name,
-                    "last_name":user.last_name
+                    "last_name":user.last_name,
+                    "role":user.role,
                 }
             },status=status.HTTP_200_OK)
         except ValueError:
