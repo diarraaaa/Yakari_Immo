@@ -1,25 +1,60 @@
 'use client';
-
-import { useState } from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import { use, useState } from 'react';
 import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone } from 'lucide-react';
 import { FaFacebookF, FaGoogle } from 'react-icons/fa';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [accountType, setAccountType] = useState<'locataire' | 'proprietaire'>('locataire');
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: ''
-  });
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  password: '',
+  confirmPassword: '',
+  username: ''
+});
 
-  const handleSubmit = () => {
-    console.log('Register:', { ...formData, accountType });
-  };
+const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const handleSubmit = async () => {
+  if (formData.password !== formData.confirmPassword) {
+    console.error("Les mots de passe ne correspondent pas");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `${api}/api/signup/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          username: formData.email,
+          email: formData.email,
+          telephone: formData.phone,
+          password: formData.password,
+          role: "locataire",
+        }),
+      }
+    );
+
+    const data = await res.json();
+    console.log(res.status, data);
+
+    if (!res.ok) {
+      throw new Error(JSON.stringify(data));
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'inscription :", error);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-dark-900 text-white flex">
@@ -92,44 +127,34 @@ export default function RegisterPage() {
               Commencez votre expérience immobilière dès maintenant
             </p>
           </div>
-
-          {/* Type de compte */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-white/80 mb-3">
-              Je suis...
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => setAccountType('locataire')}
-                className={`py-3 px-4 rounded-lg border transition-all duration-300 ${
-                  accountType === 'locataire'
-                    ? 'bg-secondary-500/10 border-secondary-500 text-white'
-                    : 'border-white/10 text-white/60 hover:border-white/20'
-                }`}
-              >
-                <div className="text-sm font-semibold">Locataire</div>
-                <div className="text-xs text-white/40 mt-1">Je cherche un logement</div>
-              </button>
-              <button
-                onClick={() => setAccountType('proprietaire')}
-                className={`py-3 px-4 rounded-lg border transition-all duration-300 ${
-                  accountType === 'proprietaire'
-                    ? 'bg-secondary-500/10 border-secondary-500 text-white'
-                    : 'border-white/10 text-white/60 hover:border-white/20'
-                }`}
-              >
-                <div className="text-sm font-semibold">Propriétaire</div>
-                <div className="text-xs text-white/40 mt-1">Je propose un bien</div>
-              </button>
-            </div>
-          </div>
-
           {/* Boutons sociaux */}
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <button className="flex items-center justify-center gap-3 px-4 py-3 border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg transition-all duration-300">
-              <FaGoogle className="w-5 h-5" />
-              <span className="text-sm font-semibold">Google</span>
-            </button>
+            <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+            try {
+              const res = await fetch(`${api}/api/google-auth/`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  token: credentialResponse.credential,
+                  role:"locataire"
+                }),
+              });
+
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.detail);
+              console.log("Google login successful:", data);
+              localStorage.setItem("access", data.access);
+              localStorage.setItem("refresh", data.refresh);
+            } catch (err) {
+              console.error(err);
+            }
+            }}
+            onError={() => console.log("Login Failed")}
+
+          />
             <button className="flex items-center justify-center gap-3 px-4 py-3 border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg transition-all duration-300">
               <FaFacebookF className="w-5 h-5" />
               <span className="text-sm font-semibold">Facebook</span>

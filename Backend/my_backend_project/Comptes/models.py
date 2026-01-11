@@ -8,7 +8,7 @@ from datetime import timedelta
 #On crée un modèle personnalisé pour les utilisateurs en héritant du modèle AbstractUser de Django
 class User(AbstractUser):
     roles=[
-        ('propriétaire','Propriétaire'),
+        ('proprietaire','Proprietaire'),
         ('locataire','Locataire'),
     ]
 #on crée un champ supplémentaire pour stocker le rôle de l'utilisateur
@@ -16,6 +16,7 @@ class User(AbstractUser):
     email=models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
     verification_token=models.CharField(max_length=100,null=True,blank=True)
+    moyen_connexion=models.CharField(max_length=50,default='email') #standard, google, facebook, etc.
     #on met une limite d'expiration pour le token de vérification
     token_expires_at=models.DateTimeField(default=timezone.now()+timedelta(hours=24))
     groups = models.ManyToManyField(
@@ -32,7 +33,7 @@ class User(AbstractUser):
     )
     #on crée les méthodes pour avoir le role de l'utilisateur
     def is_proprietaire(self):
-        return self.role=='propriétaire'
+        return self.role=='proprietaire'
     @property
     def is_locataire(self):
         return self.role=='locataire'
