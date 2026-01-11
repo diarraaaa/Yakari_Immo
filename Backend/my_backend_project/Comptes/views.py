@@ -9,6 +9,17 @@ from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
 import uuid
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
+import os
+import dotenv
+dotenv.load_dotenv()
+
 #on va créer une vue pour l'inscription des utilisateurs
 class SignupView(APIView):
     def get(self,request):
@@ -84,3 +95,37 @@ class VerifyEmailView(APIView):
             fail_silently=False,
         )
         return Response({"message":"Email verified successfully."},status=status.HTTP_200_OK)
+#on va créer une vue pour l'inscription via google
+class GoogleAuthView(APIView):
+    def post(self,request):
+        token=request.data.get("token")
+        try:
+            idinfo=id_token.verify_oauth2_token(token,requests.Request(),os.getenv("GOOGLE_CLIENT_ID"))
+            email=idinfo.get("email")
+            first_name=idinfo.get("given_name","")
+            last_name=idinfo.get("family_name","")
+            try:
+                user=User.objects.get(email=email)
+            except User.DoesNotExist:
+                user=User.objects.create(
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_verified=True
+                )
+                user.set_unusable_password()
+                user.save()
+            refresh=RefreshToken.for_user(user)
+            return Response({
+                "refresh":str(refresh),
+                "access":str(refresh.access_token),
+                "user":{
+                    "id":user.id,
+                    "email":user.email,
+                    "first_name":user.first_name,
+                    "last_name":user.last_name
+                }
+            },status=status.HTTP_200_OK)
+        except ValueError:
+            return Response({"error":"Invalid token"},status=status.HTTP_400_BAD_REQUEST)
+

@@ -1,14 +1,13 @@
 'use client';
-
 import React, { useState } from 'react';
 import { Home, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { FaFacebookF, FaGoogle } from 'react-icons/fa';
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const handleSubmit = async () => {
   try {
@@ -25,7 +24,6 @@ const handleSubmit = async () => {
         }),
       }
     );
-
     const data = await res.json();
     console.log(res.status, data);
 
@@ -64,10 +62,31 @@ const handleSubmit = async () => {
 
           {/* Boutons sociaux */}
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <button className="flex items-center justify-center gap-3 px-4 py-3 border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg transition-all duration-300">
-              <FaGoogle className="w-5 h-5" />
-              <span className="text-sm font-semibold">Google</span>
-            </button>
+            <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+            try {
+              const res = await fetch(`${api}/api/google-auth/`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  token: credentialResponse.credential, // ✅ ID TOKEN
+                }),
+              });
+
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.detail);
+              console.log("Google login successful:", data);
+              localStorage.setItem("access", data.access);
+              localStorage.setItem("refresh", data.refresh);
+            } catch (err) {
+              console.error(err);
+            }
+            }}
+            onError={() => console.log("Login Failed")}
+
+          />
             <button className="flex items-center justify-center gap-3 px-4 py-3 border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg transition-all duration-300">
               <FaFacebookF className="w-5 h-5" />
               <span className="text-sm font-semibold">Facebook</span>
