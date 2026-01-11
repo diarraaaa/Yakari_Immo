@@ -115,10 +115,12 @@ class GoogleAuthView(APIView):
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
-                    is_verified=True
+                    is_verified=True,
+                    username=email,
                 )
                 user.set_unusable_password()
                 user.last_login=timezone.now()
+                user.moyen_connexion="google"
                 user.save()
                 if role=="proprietaire":
                     user.role="proprietaire"

@@ -16,6 +16,7 @@ class User(AbstractUser):
     email=models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
     verification_token=models.CharField(max_length=100,null=True,blank=True)
+    moyen_connexion=models.CharField(max_length=50,default='email') #standard, google, facebook, etc.
     #on met une limite d'expiration pour le token de vérification
     token_expires_at=models.DateTimeField(default=timezone.now()+timedelta(hours=24))
     groups = models.ManyToManyField(

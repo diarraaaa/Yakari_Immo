@@ -7,16 +7,14 @@ import { FaFacebookF, FaGoogle } from 'react-icons/fa';
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [accountType, setAccountType] = useState<'locataire' | 'proprietaire'>('locataire');
-const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
   password: '',
   confirmPassword: '',
-  username: '',
-  accountType: ''
+  username: ''
 });
 
 const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -37,11 +35,11 @@ const handleSubmit = async () => {
         body: JSON.stringify({
           first_name: formData.firstName,
           last_name: formData.lastName,
-          username: formData.firstName,
+          username: formData.email,
           email: formData.email,
           telephone: formData.phone,
           password: formData.password,
-          role: accountType,
+          role: "locataire",
         }),
       }
     );
@@ -129,38 +127,6 @@ const handleSubmit = async () => {
               Commencez votre expérience immobilière dès maintenant
             </p>
           </div>
-
-          {/* Type de compte */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-white/80 mb-3">
-              Je suis...
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => setAccountType('locataire')}
-                className={`py-3 px-4 rounded-lg border transition-all duration-300 ${
-                  accountType === 'locataire'
-                    ? 'bg-secondary-500/10 border-secondary-500 text-white'
-                    : 'border-white/10 text-white/60 hover:border-white/20'
-                }`}
-              >
-                <div className="text-sm font-semibold">Locataire</div>
-                <div className="text-xs text-white/40 mt-1">Je cherche un logement</div>
-              </button>
-              <button
-                onClick={() => setAccountType('proprietaire')}
-                className={`py-3 px-4 rounded-lg border transition-all duration-300 ${
-                  accountType === 'proprietaire'
-                    ? 'bg-secondary-500/10 border-secondary-500 text-white'
-                    : 'border-white/10 text-white/60 hover:border-white/20'
-                }`}
-              >
-                <div className="text-sm font-semibold">Propriétaire</div>
-                <div className="text-xs text-white/40 mt-1">Je propose un bien</div>
-              </button>
-            </div>
-          </div>
-
           {/* Boutons sociaux */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <GoogleLogin

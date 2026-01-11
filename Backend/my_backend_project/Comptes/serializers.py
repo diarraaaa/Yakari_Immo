@@ -26,6 +26,7 @@ class InscriptionSerializer(serializers.ModelSerializer):
         user.role=role
         user.token_expires_at=timezone.now()+timedelta(hours=24)
         user.verification_token=uuid.uuid4()
+        user.moyen_connexion='email'
         #on sauvegarde l'utilisateur
         user.save()
         #on envoie l'email de vérification
