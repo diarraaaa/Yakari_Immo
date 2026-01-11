@@ -1,326 +1,99 @@
 'use client';
-import { GoogleLogin } from '@react-oauth/google';
-import { use, useState } from 'react';
-import { Home, Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone } from 'lucide-react';
-import { FaFacebookF, FaGoogle } from 'react-icons/fa';
 
-export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  password: '',
-  confirmPassword: '',
-  username: ''
-});
+import React from 'react';
+import { Home, User, Building2 } from 'lucide-react';
+import Link from 'next/link';
 
-const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const handleSubmit = async () => {
-  if (formData.password !== formData.confirmPassword) {
-    console.error("Les mots de passe ne correspondent pas");
-    return;
-  }
-
-  try {
-    const res = await fetch(
-      `${api}/api/signup/`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          username: formData.email,
-          email: formData.email,
-          telephone: formData.phone,
-          password: formData.password,
-          role: "locataire",
-        }),
-      }
-    );
-
-    const data = await res.json();
-    console.log(res.status, data);
-
-    if (!res.ok) {
-      throw new Error(JSON.stringify(data));
-    }
-  } catch (error) {
-    console.error("Erreur lors de l'inscription :", error);
-  }
-};
-
-
+export default function RegisterChoice() {
   return (
-    <div className="min-h-screen bg-dark-900 text-white flex">
-      {/* Colonne gauche - Image/Contenu */}
-      {/* Colonne gauche - Image de fond */}
-<div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-  {/* Image */}
-  <div
-    className="absolute inset-0 bg-cover bg-center"
-    style={{
-      backgroundImage:
-        "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600')",
-    }}
-  />
-
-  {/* Overlay sombre */}
-  <div className="absolute inset-0 bg-dark-900/80 backdrop-blur-sm" />
-
-  {/* Contenu */}
-<div className="relative z-10 flex items-start justify-center p-16 pt-24">
-    <div className="max-w-lg">
-      <h2 className="font-serif text-5xl mb-6 leading-tight">
-        Rejoignez
-        <br />
-        <span className="text-secondary-500">Deukeulma</span>
-      </h2>
-
-      <p className="text-xl text-white/60 leading-relaxed mb-8">
-        Créez votre compte et accédez à des milliers de propriétés au Sénégal.
-        Que vous soyez locataire ou propriétaire, nous avons la solution pour vous.
-      </p>
-
-      {/* Avantages */}
-      <div className="space-y-4">
-        {[
-          'Inscription gratuite et sans engagement',
-          'Accès à 2500+ logements vérifiés',
-          'Gestion simplifiée de vos annonces',
-          'Support client 24/7',
-        ].map((benefit, idx) => (
-          <div key={idx} className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-secondary-500 rounded-full" />
-            <span className="text-white/80">{benefit}</span>
+    <div className="min-h-screen bg-dark-900 text-white flex items-center justify-center px-6">
+      <div className="max-w-4xl w-full">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-3 mb-12">
+          <div className="w-16 h-16 bg-secondary-500 rounded-lg flex items-center justify-center shadow-lg">
+            <Home className="w-9 h-9 text-white" />
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</div>
+          <span className="text-3xl font-bold">Deukeulma</span>
+        </div>
 
-      {/* Colonne droite - Formulaire */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-3 mb-12 group">
-            <div className="w-12 h-12 bg-secondary-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Home className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-2xl font-bold">Deukeulma</span>
-          </a>
-
-          {/* Titre */}
-          <div className="mb-8">
-            <h1 className="font-serif text-4xl md:text-5xl mb-4 leading-tight">
-              Créer un
-              <br />
-              <span className="text-secondary-500">compte</span>
-            </h1>
-            <p className="text-white/60 text-lg">
-              Commencez votre expérience immobilière dès maintenant
-            </p>
-          </div>
-          {/* Boutons sociaux */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-            try {
-              const res = await fetch(`${api}/api/google-auth/`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  token: credentialResponse.credential,
-                  role:"locataire"
-                }),
-              });
-
-              const data = await res.json();
-              if (!res.ok) throw new Error(data.detail);
-              console.log("Google login successful:", data);
-              localStorage.setItem("access", data.access);
-              localStorage.setItem("refresh", data.refresh);
-            } catch (err) {
-              console.error(err);
-            }
-            }}
-            onError={() => console.log("Login Failed")}
-
-          />
-            <button className="flex items-center justify-center gap-3 px-4 py-3 border border-white/10 hover:border-white/20 hover:bg-white/5 rounded-lg transition-all duration-300">
-              <FaFacebookF className="w-5 h-5" />
-              <span className="text-sm font-semibold">Facebook</span>
-            </button>
-          </div>
-
-          {/* Séparateur */}
-          <div className="relative mb-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-dark-900 text-white/40">Ou avec votre email</span>
-            </div>
-          </div>
-
-          {/* Formulaire */}
-          <div className="space-y-5">
-            {/* Prénom */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Prénom
-              </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  placeholder="Jean"
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-              </div>
-            </div>
-
-            {/* Nom */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Nom
-              </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  placeholder="Dupont"
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Adresse email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="votre@email.com"
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-              </div>
-            </div>
-
-            {/* Téléphone */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Téléphone
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+221 XX XXX XX XX"
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-              </div>
-            </div>
-
-            {/* Mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirmer mot de passe */}
-            <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                Confirmer le mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-secondary-500 focus:bg-white/10 outline-none transition-all text-white placeholder:text-white/40"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            {/* CGU */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-white/20 bg-white/5 mt-1"
-              />
-              <span className="text-sm text-white/60">
-                J'accepte les{' '}
-                <a href="#" className="text-secondary-500 hover:text-secondary-400">conditions d'utilisation</a>
-                {' '}et la{' '}
-                <a href="#" className="text-secondary-500 hover:text-secondary-400">politique de confidentialité</a>
-              </span>
-            </label>
-
-            {/* Bouton d'inscription */}
-            <button
-              onClick={handleSubmit}
-              className="group w-full py-4 bg-secondary-500 hover:bg-secondary-600 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <span>Créer mon compte</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-
-          {/* Connexion */}
-          <p className="mt-8 text-center text-white/60">
-            Vous avez déjà un compte ?{' '}
-            <a href="/connexion" className="text-secondary-500 hover:text-secondary-400 font-semibold transition-colors">
-              Se connecter
-            </a>
+        {/* Titre */}
+        <div className="text-center mb-12">
+          <h1 className="font-serif text-5xl md:text-6xl mb-4">
+            Rejoignez
+            <br />
+            <span className="text-secondary-500">Deukeulma</span>
+          </h1>
+          <p className="text-xl text-white/60">
+            Choisissez le type de compte qui vous correspond
           </p>
         </div>
+
+        {/* Cartes de choix */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Carte Locataire */}
+          <Link
+            href="/inscription/locataire"
+            className="group p-8 bg-white/5 border border-white/10 hover:border-secondary-500/50 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 text-left block"
+          >
+            <div className="w-16 h-16 bg-secondary-500/20 border border-secondary-500/30 rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-500/30 transition-all">
+              <User className="w-8 h-8 text-secondary-500" />
+            </div>
+            <h3 className="text-2xl font-bold mb-3">Je suis locataire</h3>
+            <p className="text-white/60 mb-6">
+              Je cherche un logement à louer au Sénégal
+            </p>
+            <ul className="space-y-2 text-sm text-white/70">
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Accès à 2500+ annonces
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Recherche personnalisée
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Alertes en temps réel
+              </li>
+            </ul>
+          </Link>
+
+          {/* Carte Propriétaire */}
+          <Link
+            href="/inscription/proprietaire"
+            className="group p-8 bg-white/5 border border-white/10 hover:border-secondary-500/50 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 text-left block"
+          >
+            <div className="w-16 h-16 bg-secondary-500/20 border border-secondary-500/30 rounded-lg flex items-center justify-center mb-6 group-hover:bg-secondary-500/30 transition-all">
+              <Building2 className="w-8 h-8 text-secondary-500" />
+            </div>
+            <h3 className="text-2xl font-bold mb-3">Je suis propriétaire</h3>
+            <p className="text-white/60 mb-6">
+              Je souhaite mettre mon bien en location
+            </p>
+            <ul className="space-y-2 text-sm text-white/70">
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Gestion simplifiée
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Visibilité maximale
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-secondary-500 rounded-full" />
+                Outils professionnels
+              </li>
+            </ul>
+          </Link>
+        </div>
+
+        {/* Lien connexion */}
+        <p className="text-center mt-12 text-white/60">
+          Vous avez déjà un compte ?{' '}
+          <Link href="/connexion" className="text-secondary-500 hover:text-secondary-400 font-semibold transition-colors">
+            Se connecter
+          </Link>
+        </p>
       </div>
     </div>
   );
